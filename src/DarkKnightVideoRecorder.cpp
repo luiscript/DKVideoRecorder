@@ -106,7 +106,7 @@ void DarkKnightVideoRecorder::exportVideo(ofxDatGuiButtonEvent e)
 void DarkKnightVideoRecorder::threadedFunction()
 {
     string path = ofFilePath::getAbsolutePath( ofToDataPath("") );
-    string command = "/libs/ffmpeg -framerate " + ofToString(fps) + " -i " + path + "export/frame_%d.png -crf 10 -vf 'setpts=1.0*PTS' -pix_fmt yuv420p -c:a copy -tune grain -c:v hap -format hap_alpha " + path + "export.mov";
+    string command = "/libs/ffmpeg -framerate " + ofToString(fps) + " -i " + path + "export/frame_%d.png -crf 10 -pix_fmt yuv420p -c:a copy -tune grain -c:v hap -format hap_alpha " + path + "export.mov";
     string full = path + command;
     system(full.c_str());
     stopThread();
