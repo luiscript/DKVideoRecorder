@@ -22,10 +22,10 @@
 
 
 
-#include "DarkKnightVideoRecorder.hpp"
+#include "DKVideoRecorder.hpp"
 
 
-void DarkKnightVideoRecorder::setup()
+void DKVideoRecorder::setup()
 {
     drawFbo = false;
     fbo = nullptr;
@@ -34,11 +34,11 @@ void DarkKnightVideoRecorder::setup()
     exporting = false;
     exportingPath = "export/";
     prefix = "frame_";
-    addInputConnection(ConnectionType::DK_FBO);
+    addInputConnection(DKConnectionType::DK_FBO);
     recorder = make_shared<ofxFboRecorder>(seconds, fps);
 }
 
-void DarkKnightVideoRecorder::update()
+void DKVideoRecorder::update()
 {
     if(recorder->isRecording())
     {
@@ -50,60 +50,60 @@ void DarkKnightVideoRecorder::update()
     }
 }
 
-void DarkKnightVideoRecorder::draw()
+void DKVideoRecorder::draw()
 {
     
 }
 
-void DarkKnightVideoRecorder::setFbo(ofFbo * fboPtr)
+void DKVideoRecorder::setFbo(ofFbo * fboPtr)
 {
     fbo  = fboPtr;
     drawFbo = fboPtr != nullptr;
 }
 
-void DarkKnightVideoRecorder::addModuleParameters()
+void DKVideoRecorder::addModuleParameters()
 {
     ofxDatGuiButton * record = gui->addButton("START RECORDING");
     record->setLabelAlignment(ofxDatGuiAlignment::CENTER);
-    record->onButtonEvent(this, &DarkKnightVideoRecorder::startRecording);
+    record->onButtonEvent(this, &DKVideoRecorder::startRecording);
     
     ofxDatGuiButton * exportFrames = gui->addButton("EXPORT VIDEO");
     exportFrames->setLabelAlignment(ofxDatGuiAlignment::CENTER);
-    exportFrames->onButtonEvent(this, &DarkKnightVideoRecorder::exportVideo);
+    exportFrames->onButtonEvent(this, &DKVideoRecorder::exportVideo);
     
     auto config = gui->addFolder("SETTINGS");
     
     ofxDatGuiTextInput * fpsInput = config->addTextInput("FPS", "60");
-    fpsInput->onTextInputEvent(this, &DarkKnightVideoRecorder::onFpsChange);
+    fpsInput->onTextInputEvent(this, &DKVideoRecorder::onFpsChange);
     ofxDatGuiTextInput * secondsInput = config->addTextInput("SECONDS", "10");
-    secondsInput->onTextInputEvent(this, &DarkKnightVideoRecorder::onSecondsChange);
+    secondsInput->onTextInputEvent(this, &DKVideoRecorder::onSecondsChange);
 }
 
-void DarkKnightVideoRecorder::onFpsChange(ofxDatGuiTextInputEvent e)
+void DKVideoRecorder::onFpsChange(ofxDatGuiTextInputEvent e)
 {
     fps = ofToInt(e.target->getText());
 }
 
-void DarkKnightVideoRecorder::onSecondsChange(ofxDatGuiTextInputEvent e)
+void DKVideoRecorder::onSecondsChange(ofxDatGuiTextInputEvent e)
 {
     seconds = ofToInt(e.target->getText());
 }
 
-void DarkKnightVideoRecorder::startRecording(ofxDatGuiButtonEvent e)
+void DKVideoRecorder::startRecording(ofxDatGuiButtonEvent e)
 {
     recorder = make_shared<ofxFboRecorder>(seconds, fps);
     gui->getHeader()->setLabel("VIDEO RECORDER: RECORDING");
     recorder->start();
 }
 
-void DarkKnightVideoRecorder::exportVideo(ofxDatGuiButtonEvent e)
+void DKVideoRecorder::exportVideo(ofxDatGuiButtonEvent e)
 {
     gui->getHeader()->setLabel("VIDEO RECORDER: EXPORTING");
     exporting = true;
     startThread();
 }
 
-void DarkKnightVideoRecorder::threadedFunction()
+void DKVideoRecorder::threadedFunction()
 {
     string path = ofFilePath::getAbsolutePath( ofToDataPath("") );
     string command = "/libs/ffmpeg -framerate " + ofToString(fps) + " -i " + path + "export/frame_%d.png -crf 10 -pix_fmt yuv420p -c:a copy -tune grain -c:v hap -format hap_alpha " + path + "export.mov";

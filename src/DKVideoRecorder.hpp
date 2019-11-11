@@ -20,13 +20,13 @@
  SOFTWARE.
  */
 
-#ifndef DarkKnightVideoRecorder_hpp
-#define DarkKnightVideoRecorder_hpp
+#ifndef DKVideoRecorder_hpp
+#define DKVideoRecorder_hpp
 
-#include "module.hpp"
+#include "DKModule.hpp"
 #include "ofxFboRecorder.h"
 
-class DarkKnightVideoRecorder: public Module, public ofThread
+class DKVideoRecorder: public DKModule, public ofThread
 {
 private:
     int fps;
@@ -50,4 +50,4 @@ public:
     void threadedFunction();
 };
 
-#endif /* DarkKnightVideoRecorder_hpp */
+#endif /* DKVideoRecorder_hpp */
